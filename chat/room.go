@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/RomanosTrechlis/ChatApp/trace"
+	"github.com/RomanosTrechlis/GoProgBlueprints/trace"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"

@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"github.com/RomanosTrechlis/ChatApp/trace"
+	"github.com/RomanosTrechlis/GoProgBlueprints/trace"
 	"github.com/stretchr/gomniauth"
 	"github.com/stretchr/gomniauth/providers/google"
 	"github.com/stretchr/objx"
