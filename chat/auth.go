@@ -4,14 +4,30 @@ import (
 	"crypto/md5"
 	"fmt"
 	"github.com/stretchr/gomniauth"
+	gomniauthcommon "github.com/stretchr/gomniauth/common"
 	"github.com/stretchr/objx"
 	"io"
 	"net/http"
 	"strings"
+	"log"
 )
+
+type ChatUser interface {
+	UniqueID() string
+	AvatarURL() string
+}
+
+type chatUser struct {
+	gomniauthcommon.User
+	uniqueID string
+}
 
 type authHandler struct {
 	next http.Handler
+}
+
+func (u chatUser) UniqueID() string {
+	return u.uniqueID
 }
 
 func (h *authHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -45,12 +61,12 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	case "login":
 		provider, err := gomniauth.Provider(provider)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Error when trying to get provider $s:%s", provider, err), http.StatusBadRequest)
+			http.Error(w, fmt.Sprintf("Error when trying to get provider %s:%s", provider, err), http.StatusBadRequest)
 			return
 		}
 		loginUrl, err := provider.GetBeginAuthURL(nil, nil)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Error when trying to GetBeginAuthURL for $s:%s", provider, err), http.StatusInternalServerError)
+			http.Error(w, fmt.Sprintf("Error when trying to GetBeginAuthURL for %s:%s", provider, err), http.StatusInternalServerError)
 			return
 		}
 		w.Header().Set("Location", loginUrl)
@@ -59,27 +75,33 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	case "callback":
 		provider, err := gomniauth.Provider(provider)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Error when trying to get provider $s:%s", provider, err), http.StatusBadRequest)
+			http.Error(w, fmt.Sprintf("Error when trying to get provider %s:%s", provider, err), http.StatusBadRequest)
 			return
 		}
 		creds, err := provider.CompleteAuth(objx.MustFromURLQuery(r.URL.RawQuery))
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Error when trying to complete auth for $s:%s", provider, err), http.StatusInternalServerError)
+			http.Error(w, fmt.Sprintf("Error when trying to complete auth for %s:%s", provider, err), http.StatusInternalServerError)
 			return
 		}
 		user, err := provider.GetUser(creds)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Error when trying to get user from $s:%s", provider, err), http.StatusInternalServerError)
-			return
+			log.Fatalln("Error when trying to get user from", provider, "-", err)
+		}
+		chatUser := &chatUser{
+			User: user,
 		}
 		m := md5.New()
 		io.WriteString(m, strings.ToLower(user.Email()))
+		chatUser.uniqueID = fmt.Sprintf("%x", m.Sum(nil))
+		avatarURL, err := avatars.GetAvatarURL(chatUser)
+		if err != nil {
+			log.Fatalln("Error when trying to GetAvatarURL", "-", err)
+		}
 		userId := fmt.Sprintf("%x", m.Sum(nil))
 		authCookieValue := objx.New(map[string]interface{}{
 			"userid":     userId,
 			"name":       user.Name(),
-			"avatar_url": user.AvatarURL(),
-			"email":      user.Email(),
+			"avatar_url": avatarURL,
 		}).MustBase64()
 		http.SetCookie(w, &http.Cookie{
 			Name:  "auth",
