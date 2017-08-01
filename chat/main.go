@@ -44,7 +44,7 @@ func main() {
 			"http://localhost:8080/auth/callback/google"),
 	)
 
-	r := newRoom()
+	r := newRoom(UseAuthAvatar)
 	r.tracer = trace.New(os.Stdout)
 
 	http.Handle("/chat", MustAuth(&templateHandler{filename: "chat.html"}))
@@ -54,9 +54,9 @@ func main() {
 
 	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &http.Cookie{
-			Name: "auth",
-			Value: "",
-			Path: "/",
+			Name:   "auth",
+			Value:  "",
+			Path:   "/",
 			MaxAge: -1,
 		})
 		w.Header().Set("Location", "/chat")
