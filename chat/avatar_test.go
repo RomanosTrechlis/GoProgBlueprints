@@ -4,8 +4,8 @@ import (
 	gomniauthtest "github.com/stretchr/gomniauth/test"
 	"io/ioutil"
 	"os"
-	"testing"
 	"path"
+	"testing"
 )
 
 func TestAuthAvatar(t *testing.T) {

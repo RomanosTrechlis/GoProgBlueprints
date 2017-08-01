@@ -52,7 +52,7 @@ func (FileSystemAvatar) GetAvatarURL(u ChatUser) (string, error) {
 		if file.IsDir() {
 			continue
 		}
-		if match, _ := path.Match(u.UniqueID() + "*", file.Name()); match {
+		if match, _ := path.Match(u.UniqueID()+"*", file.Name()); match {
 			return "/avatars/" + file.Name(), nil
 		}
 	}

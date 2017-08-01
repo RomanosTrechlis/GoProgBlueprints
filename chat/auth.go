@@ -7,9 +7,9 @@ import (
 	gomniauthcommon "github.com/stretchr/gomniauth/common"
 	"github.com/stretchr/objx"
 	"io"
+	"log"
 	"net/http"
 	"strings"
-	"log"
 )
 
 type ChatUser interface {
