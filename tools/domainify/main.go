@@ -1,12 +1,12 @@
 package main
 
 import (
-	"time"
-	"math/rand"
 	"bufio"
-	"os"
 	"fmt"
+	"math/rand"
+	"os"
 	"strings"
+	"time"
 	"unicode"
 )
 
