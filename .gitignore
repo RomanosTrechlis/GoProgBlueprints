@@ -3,6 +3,8 @@ projectFilesBackup/
 chat/avatars/
 
 *.exe
+*.exe~
 *.iml
 
 chat/keys.go
+socialpoll/twittervotes/setup.bat

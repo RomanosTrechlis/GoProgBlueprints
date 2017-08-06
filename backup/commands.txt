@@ -1,0 +1,3 @@
+backup -db=C:/Users/Romanos/backupdb add C:/Users/Romanos/blog
+
+backupd -archive=C:/Users/Romanos/Snapshots -db="C:/Users/Romanos/backupdb"

@@ -1,3 +1,12 @@
 nsqlookupd
-nsqd -lookupd-tcp-address=localhost:4160
+nsqd -lookupd-tcp-address=127.0.0.1:4160
 mongod --dbpath ./mongodb
+
+mongo
+> use ballots
+> db.polls.insert({"title":"Test poll", "options":["happy","sad","fail","win"]})
+> db.polls.insert({"title":"Test poll 2", "options":["BrightonPride2017","saturdaymorning","FootballIsBack","win","happy","sad",]})
+> db.polls.insert({"title":"Test poll 4", "options":["#BrightonPride2017","#saturdaymorning","#FootballIsBack","#HallofFameGame ","#NFL","#GoT"]})
+
+// monitor messages being generated
+nsq_tail --topic="votes" --lookupd-http-address=127.0.0.1:4161

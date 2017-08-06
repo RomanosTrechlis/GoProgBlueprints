@@ -2,17 +2,18 @@ package main
 
 import (
 	"encoding/json"
-	"gopkg.in/mgo.v2"
 	"log"
 	"net/http"
 	"net/url"
-	"strings"
-	"github.com/bitly/go-nsq"
-	"sync"
 	"os"
 	"os/signal"
+	"strings"
+	"sync"
 	"syscall"
 	"time"
+
+	"github.com/bitly/go-nsq"
+	"gopkg.in/mgo.v2"
 )
 
 func main() {
